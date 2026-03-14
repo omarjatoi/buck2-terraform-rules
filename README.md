@@ -4,7 +4,26 @@
 
 ## Usage
 
-...
+```starlark
+load("@terraform_rules//terraform:macros.bzl", "terraform_workspace")
+
+terraform_workspace(
+    name = "vpc",
+    srcs = glob(["**/*.tf"]),
+    vars = {"region": "us-east-1"},
+)
+```
+
+```bash
+buck2 run //infra:vpc-plan        # plan
+buck2 run //infra:vpc-apply       # apply (interactive)
+buck2 run //infra:vpc-validate    # validate
+buck2 run //infra:vpc-fmt -- .    # format source files
+buck2 run //infra:vpc-output      # read outputs
+buck2 run //infra:vpc-destroy     # destroy
+```
+
+Set `auto_approve = True` on the workspace for CI.
 
 ##  License
 
