@@ -1,0 +1,11 @@
+load("@prelude//rules.bzl", "bzl_library")
+
+bzl_library(
+    name = "rules",
+    srcs = [
+        "macros.bzl",
+        "providers.bzl",
+        "rules.bzl",
+    ],
+    visibility = ["PUBLIC"],
+)
