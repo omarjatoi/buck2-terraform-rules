@@ -1,0 +1,14 @@
+[repositories]
+  root = .
+
+[cells]
+  terraform_rules = .
+
+[buildfile]
+  name = BUCK
+
+[parser]
+  target_platform_detector_spec = target:root//...->root//toolchains:default
+
+[project]
+  ignore = .git, .terraform, **/.terraform
