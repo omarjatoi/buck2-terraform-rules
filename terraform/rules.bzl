@@ -172,5 +172,3 @@ terraform_fmt = rule(
     impl = _terraform_fmt_impl,
     attrs = {},
 )
-
-
