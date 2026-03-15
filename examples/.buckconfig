@@ -1,0 +1,21 @@
+[repositories]
+  root = .
+
+[cells]
+  terraform_rules = terraform_rules
+
+[external_cells]
+  terraform_rules = git
+
+[external_cell_terraform_rules]
+  git_origin = https://github.com/omarjatoi/buck2-terraform-rules.git
+  commit_hash = 58ce763d8bd30c33b0b89eeb521de7a3b134f01e
+
+[buildfile]
+  name = BUCK
+
+[parser]
+  target_platform_detector_spec = target:root//...->root//toolchains:default
+
+[project]
+  ignore = .git, .terraform, **/.terraform

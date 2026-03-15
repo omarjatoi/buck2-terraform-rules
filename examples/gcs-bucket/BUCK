@@ -1,0 +1,7 @@
+load(":defs.bzl", "run_with_outputs")
+
+run_with_outputs(
+    name = "list-bucket",
+    main = "list_bucket.py",
+    deps = ["//infra:gcs-bucket"],
+)

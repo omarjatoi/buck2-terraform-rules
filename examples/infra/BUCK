@@ -1,0 +1,10 @@
+load("@terraform_rules//terraform:macros.bzl", "terraform_workspace")
+
+terraform_workspace(
+    name = "gcs-bucket",
+    srcs = glob(["*.tf"]),
+    vars = {
+        "project": "my-gcp-project",
+        "bucket_name": "my-example-bucket",
+    },
+)
