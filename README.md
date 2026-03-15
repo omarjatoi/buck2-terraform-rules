@@ -4,6 +4,22 @@
 
 ## Usage
 
+Add to your project's `.buckconfig`:
+
+```ini
+[cells]
+  terraform_rules = terraform_rules
+
+[external_cells]
+  terraform_rules = git
+
+[external_cell_terraform_rules]
+  git_origin = https://github.com/omarjatoi/buck2-terraform-rules.git
+  commit_hash = <commit>
+```
+
+and add to `BUCK` file:
+
 ```starlark
 load("@terraform_rules//terraform:macros.bzl", "terraform_workspace")
 
@@ -15,15 +31,14 @@ terraform_workspace(
 ```
 
 ```bash
+buck2 build //infra:vpc           # apply and produce outputs.json
 buck2 run //infra:vpc-plan        # plan
-buck2 run //infra:vpc-apply       # apply (interactive)
 buck2 run //infra:vpc-validate    # validate
 buck2 run //infra:vpc-fmt -- .    # format source files
-buck2 run //infra:vpc-output      # read outputs
 buck2 run //infra:vpc-destroy     # destroy
 ```
 
-Set `auto_approve = True` on the workspace for CI.
+Other targets can `deps` on `:vpc` to consume its `outputs.json`.
 
 ##  License
 
