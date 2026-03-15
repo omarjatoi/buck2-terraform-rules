@@ -91,30 +91,36 @@ terraform_validate = rule(
     },
 )
 
-# terraform apply
+# terraform apply — build action that produces outputs.json
 def _terraform_apply_impl(ctx):
     module_info = ctx.attrs.module[TerraformModuleInfo]
-
-    cmd = "terraform apply"
-    if ctx.attrs.auto_approve:
-        cmd += " -auto-approve"
+    outputs_json = ctx.actions.declare_output("outputs.json")
 
     script = ctx.actions.write(
         "apply.sh",
-        _SCRIPT_PREAMBLE + cmd + ' "$@"\n',
+        _SCRIPT_PREAMBLE + """\
+OUTPUT_FILE="$1"
+terraform apply -auto-approve >&2
+terraform output -json > "$OUTPUT_FILE"
+""",
         is_executable = True,
     )
 
+    ctx.actions.run(
+        cmd_args(script, module_info.workspace_dir, outputs_json.as_output()),
+        category = "terraform_apply",
+        local_only = True,
+        allow_cache_upload = False,
+    )
+
     return [
-        DefaultInfo(),
-        RunInfo(args = cmd_args(script, module_info.workspace_dir)),
+        DefaultInfo(default_output = outputs_json),
     ]
 
 terraform_apply = rule(
     impl = _terraform_apply_impl,
     attrs = {
         "module": attrs.dep(providers = [TerraformModuleInfo]),
-        "auto_approve": attrs.bool(default = False),
     },
 )
 
@@ -167,24 +173,4 @@ terraform_fmt = rule(
     attrs = {},
 )
 
-# terraform output
-def _terraform_output_impl(ctx):
-    module_info = ctx.attrs.module[TerraformModuleInfo]
 
-    script = ctx.actions.write(
-        "output.sh",
-        _SCRIPT_PREAMBLE + 'terraform output "$@"\n',
-        is_executable = True,
-    )
-
-    return [
-        DefaultInfo(),
-        RunInfo(args = cmd_args(script, module_info.workspace_dir)),
-    ]
-
-terraform_output = rule(
-    impl = _terraform_output_impl,
-    attrs = {
-        "module": attrs.dep(providers = [TerraformModuleInfo]),
-    },
-)
